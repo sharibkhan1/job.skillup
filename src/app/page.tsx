@@ -1,31 +1,14 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { Header1 } from "@/components/ui/header";
-import Hedpage from "@/components/hed";
-
-const logos = [
-  "/logos/paloalto.png",
-  "/logos/oracle.png",
-  "/logos/okta.png",
-  "/logos/lambda.png",
-  "/logos/googlecloud.png",
-  "/logos/hubspot.png",
-  "/logos/datadog.png",
-  "/logos/dell.png",
-  "/logos/cisco.png",
-  "/logos/crowdstrike.png",
-  "/logos/braze.png",
-  "/logos/amplitude.png",
-  "/logos/adobe.png",
-  "/logos/aws.png",
-  "/logos/blurred1.png",
-];
+import InfiniteSliderBasic from "@/components/inf-slide/slider";
+import GridViewCard from "@/components/gridViewCard";
+import PaymentGridViewCard from "@/components/paymentgrid";
 
 export default function HeroSection() {
   return (
-    <div className="relative min-h-screen bg-[#022b29] text-white">
+    <div className="relative min-h-screen bg-white text-white">
       {/* Navbar */}
       <Header1/>
 
@@ -57,13 +40,16 @@ export default function HeroSection() {
       </div>
 
       {/* Logos */}
-      <div className="bg-white py-6 px-4">
-        <div className="max-w-6xl mx-auto flex flex-wrap justify-center items-center gap-8">
-          {logos.map((logo, idx) => (
-            <Image key={idx} src={logo} alt={`logo-${idx}`} width={80} height={40} />
-          ))}
-        </div>
-      </div>
+      <InfiniteSliderBasic/>
+
+      <div className="flex items-center justify-center" > 
+      <GridViewCard/>
+            </div>
+
+      <div className="flex mt-5 md:mt-10 items-center justify-center" > 
+      <PaymentGridViewCard/>
+            </div>
+            
     </div>
   );
 }
