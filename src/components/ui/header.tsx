@@ -9,15 +9,27 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { ArrowRight, ChevronDownIcon, ChevronRightIcon, Menu, MoveRight, X } from "lucide-react";
+import {  ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
+export interface NavItem {
+  title: string;
+  href?: string;
+  items?: SubItem[];
+  botItems?: SubItem[];
+}
+
+export interface SubItem {
+  title: string;
+  href: string;
+  image?:string;
+}
+
 function Header1() {
-  const navigationItems = [
+  const navigationItems:NavItem[] = [
   {
     title: "For buyers",
     href: "/for-buyers",
@@ -32,14 +44,18 @@ function Header1() {
       {
         title: "Gynger Pay",
         href: "/products/gynger-pay",
+        image:"/svgs/inline_svg_35.1.svg"
       },
       {
         title: "AP Financing",
         href: "/products/ap-financing",
+                image:"/svgs/67e9290f30d76b05050b7ae9_8501452a804098da8241ea0c9eeb7ea8_capital-ap_icon.svg"
+
       },
       {
         title: "AR Financing",
         href: "/products/ar-financing",
+        image:"/svgs/67e929220a753debb8493c93_5c05a343d29c8100431cb6a39f7dccff_capital-ar_icon.svg"
       },
     ],
     botItems:[
@@ -59,18 +75,22 @@ function Header1() {
         {
           title: "For finance",
           href: "/about",
+                  image:"/svgs/inline_svg_35.svg"
         },
         {
           title: "For go-to-market",
           href: "/fundraising",
+                  image:"/svgs/inline_svg_35.svg"
         },
         {
           title: "For AI",
           href: "/investors",
+                  image:"/svgs/inline_svg_35.svg"
         },
         {
           title: "For software",
           href: "/contact",
+                  image:"/svgs/inline_svg_35.svg"
         },
 
 
@@ -120,6 +140,7 @@ items: [
 
   const [isOpen, setOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+const [openDropdown, setOpenDropdown] = useState(false);
 
   const toggleSubmenu = (title: string) => {
     if (openSubmenu === title) {
@@ -129,8 +150,10 @@ items: [
     }
   };
   return (
-<header className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 rounded-[3rem] w-[90%] max-w-[82rem] border border-[#cefae849] backdrop-blur-lg bg-gradient-to-b from-[#022b29]/70 to-[#022b29]/70">
-  <div className=" relative mx-auto flex min-h-20 items-center justify-between px-5 lg:px-6">
+<header className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 rounded-[3rem] w-[96%] max-w-[82rem] border border-[#cefae849] backdrop-blur-lg bg-gradient-to-b from-[#022b29]/70 to-[#022b29]/70">
+  <div className=" relative mx-auto flex min-h-20 items-center justify-between px-3 sm:px-5 lg:px-6">
+       
+       
         {/* 👇 LEFT SIDE */}
     <div className="flex items-center gap-2 lg:gap-10"> {/* gap between logo and nav */}
                   {/* Left side - Logo */}
@@ -162,7 +185,12 @@ items: [
                 />
               </motion.div>          </Button>
         </div>
-          <p className="text-xl font-semibold text-white">TWBlocks</p>
+           <Image
+                        src="/svgs/inline_svg_1.0.svg"
+                        alt="Logo"
+                        width={90}
+                        height={30}
+                      />
 
         {/* Center - Navigation */}
         <div className="hidden  lg:flex items-center justify-center">
@@ -206,13 +234,27 @@ items: [
     <div className="flex flex-col">
       {item.items?.map((subItem) => (
         <NavigationMenuLink
-          key={subItem.title}
-          href={subItem.href}
-          className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-gray-100 rounded-md transition-colors"
-        >
-          <span>{subItem.title}</span>
-          <ChevronRightIcon className="w-4 h-4 text-gray-400" />
-        </NavigationMenuLink>
+      key={subItem.title}
+      href={subItem.href}
+      className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-[#EBF2F2] rounded-md transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        {/* Optional Image Icon */}
+        {subItem.image && (
+          <Image
+            src={subItem.image}
+            alt={subItem.title + " icon"}
+            width={20}
+            height={20}
+            className="object-contain"
+          />
+        )}
+        <span>{subItem.title}</span>
+      </div>
+
+      {/* Chevron */}
+      <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+    </NavigationMenuLink>
       ))}
     </div>
 
@@ -222,10 +264,10 @@ items: [
         <NavigationMenuLink
           key={subItem.title}
           href={subItem.href}
-          className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-gray-100 rounded-md transition-colors"
+          className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-[#EBF2F2] rounded-md transition-colors"
         >
           <span>{subItem.title}</span>
-          <ChevronRightIcon className="w-4 h-4 text-gray-400" />
+          <ChevronRightIcon className="w-4 h-4 dark-green-text" />
         </NavigationMenuLink>
       ))}
     </div>
@@ -240,15 +282,92 @@ items: [
           </NavigationMenu>
         </div>
 </div>
+
+
         {/* Right side - Buttons */}
         <div className="flex items-center gap-6">
 <button className="relative group lg:block hidden text-sm text-white transition-colors">
   Sign In
   <span className="underline-animate absolute left-0 bottom-0 w-full h-[2px]"></span>
 </button>
-          <Button className="bg-[#54e7a3] rounded-3xl px-[1.3rem] py-[1.4rem] text-[#022b29] hover:bg-white/90">
-            Get started
-          </Button>
+<div className="relative">
+  <Button 
+    className="light-green rounded-3xl px-[1.3rem] py-[1.4rem] dark-green-text"
+    onClick={() => setOpenDropdown(!openDropdown)}
+  >
+    Get started
+  </Button>
+  
+  <AnimatePresence>
+    {openDropdown && (
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="absolute right-0 top-full mt-6 w-64 rounded-xl bg-white shadow-lg z-50 overflow-hidden"
+      >
+        <div className="p-2">
+          <Link
+            href="/option1"
+            className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
+          >
+            <div className="flex gap-2" >
+
+            
+                      <Image
+                        src="/svgs/inline_svg_35.1.svg"
+                        alt="ADSad"
+                        width={20}
+                        height={20}
+                        className="object-contain"
+                      />
+            <span>Option 1</span>
+            </div>
+            <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+          </Link>
+          <Link
+            href="/option2"
+            className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
+          >
+                  <div className="flex gap-2" >
+
+            
+                      <Image
+                        src="/svgs/inline_svg_35.1.svg"
+                        alt="ADSad"
+                        width={20}
+                        height={20}
+                        className="object-contain"
+                      />
+            <span>Option 2</span>
+            </div>
+            <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+          </Link>
+          <div className="md:hidden ">
+            <Link
+              href="/signin"
+              className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
+            >
+            <div className="flex gap-2" >
+
+            
+                      <Image
+                        src="/svgs/inline_svg_35.1.svg"
+                        alt="ADSad"
+                        width={20}
+                        height={20}
+                        className="object-contain"
+                      />
+            <span>Sign IN</span>
+            </div>              <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+            </Link>
+          </div>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</div>
         </div>
 
         {/* Mobile menu */}

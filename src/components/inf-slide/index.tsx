@@ -1,14 +1,13 @@
 'use client';
+
 import { cn } from '@/lib/utils';
-import { useMotionValue, animate, motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import useMeasure from 'react-use-measure';
+import { motion, useAnimationFrame, useMotionValue } from 'framer-motion';
+import { useRef } from 'react';
 
 type InfiniteSliderProps = {
   children: React.ReactNode;
   gap?: number;
-  duration?: number;
-  durationOnHover?: number;
+  speed?: number; // px per second
   direction?: 'horizontal' | 'vertical';
   reverse?: boolean;
   className?: string;
@@ -16,91 +15,51 @@ type InfiniteSliderProps = {
 
 export function InfiniteSlider({
   children,
-  gap = 16,
-  duration = 40,
-  durationOnHover,
+  gap = 60,
+  speed = 60,
   direction = 'horizontal',
   reverse = false,
   className,
 }: InfiniteSliderProps) {
-  const [currentDuration, setCurrentDuration] = useState(duration);
-  const [ref, { width, height }] = useMeasure();
-  const translation = useMotionValue(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [key, setKey] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
 
-  useEffect(() => {
-    let controls;
-    const size = direction === 'horizontal' ? width : height;
-    const contentSize = size + gap;
-    const from = reverse ? -contentSize / 2 : 0;
-    const to = reverse ? 0 : -contentSize / 2;
+  useAnimationFrame((t, delta) => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    if (isTransitioning) {
-      controls = animate(translation, [translation.get(), to], {
-        ease: 'linear',
-        duration:
-          currentDuration * Math.abs((translation.get() - to) / contentSize),
-        onComplete: () => {
-          setIsTransitioning(false);
-          setKey((prevKey) => prevKey + 1);
-        },
-      });
-    } else {
-      controls = animate(translation, [from, to], {
-        ease: 'linear',
-        duration: currentDuration,
-        repeat: Infinity,
-        repeatType: 'loop',
-        repeatDelay: 0,
-        onRepeat: () => {
-          translation.set(from);
-        },
-      });
+    const totalWidth = container.scrollWidth / 3;
+    let moveBy = (speed * delta) / 1000;
+
+    if (reverse) moveBy *= -1;
+
+    let current = x.get();
+    current -= moveBy;
+
+    if (Math.abs(current) >= totalWidth) {
+      current = 0;
     }
 
-    return controls?.stop;
-  }, [
-    key,
-    translation,
-    currentDuration,
-    width,
-    height,
-    gap,
-    isTransitioning,
-    direction,
-    reverse,
-  ]);
-
-  const hoverProps = durationOnHover
-    ? {
-        onHoverStart: () => {
-          setIsTransitioning(true);
-          setCurrentDuration(durationOnHover);
-        },
-        onHoverEnd: () => {
-          setIsTransitioning(true);
-          setCurrentDuration(duration);
-        },
-      }
-    : {};
+    x.set(current);
+  });
 
   return (
     <div className={cn('overflow-hidden', className)}>
       <motion.div
-        className='flex w-max'
+        className="flex w-max"
         style={{
-          ...(direction === 'horizontal'
-            ? { x: translation }
-            : { y: translation }),
-          gap: `${gap}px`,
+          [direction === 'horizontal' ? 'x' : 'y']: x,
           flexDirection: direction === 'horizontal' ? 'row' : 'column',
+          gap: `${gap}px`,
         }}
-        ref={ref}
-        {...hoverProps}
+        ref={containerRef}
       >
-        {children}
-        {children}
+        {/* Tripled content for smooth wraparound */}
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="flex gap-[60px]">
+            {children}
+          </div>
+        ))}
       </motion.div>
     </div>
   );

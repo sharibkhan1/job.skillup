@@ -112,6 +112,13 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+:root {
+  --font-work-sans: 'Work Sans', sans-serif;
+}
+body {
+  font-family: var(--font-work-sans), sans-serif;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -175,4 +182,20 @@
   transform: scaleX(0);
   opacity: 0;
   transform-origin: right;
+}
+
+
+.light-green {
+  background-color: #9FE29E;
+}
+.dark-green {
+  background-color: #031F1C;
+}
+
+
+.dark-green-text {
+  color: #2C3F2C;
+}
+.dark-green-text2 {
+  color: #031F1C;
 }

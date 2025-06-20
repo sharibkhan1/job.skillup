@@ -9,7 +9,7 @@ const InfiniteSliderBasic = () => {
       {/* Right fog */}
       <div className="pointer-events-none absolute top-0 right-0 h-full w-20 md:w-40 z-10 bg-gradient-to-l from-white to-white/10 " />
 
-    <InfiniteSlider gap={60} className="w-full h-full ">
+    <InfiniteSlider direction="horizontal" gap={60} className="w-full h-full ">
       <Image
         src="/svgs/680bc458cd332b3f455fe319_doit.svg"
         alt="Apple Music logo"
