@@ -118,7 +118,7 @@ const TestimonialPage = () => {
           </div>
         </div>
         <p className="text-2xl  leading-snug py-4 md:text-3xl font-medium text-gray-800">
-          `&ldquo;`{t.text}`&ldquo;`
+          &ldquo;{t.text}&ldquo;
         </p>
         <div className="inline-flex py-2 items-end gap-2 text-md font-medium text-green-900 hover:text-green-500 group transition-colors duration-300 cursor-pointer">
           Learn more
