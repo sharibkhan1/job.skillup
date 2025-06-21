@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useEffect, useState } from "react";
 import { Header1 } from "@/components/ui/header";
 import InfiniteSliderBasic from "@/components/inf-slide/slider";
 import GridViewCard from "@/components/gridViewCard";
@@ -9,32 +10,44 @@ import TestimonialPage from "@/components/testomonial";
 import SecFoot from "@/components/secfooter";
 import Footer from "@/components/footer";
 import HeroSection from "@/components/HeroSection";
+import { getMainRes } from "../../helper";
 
 export default function Page() {
+
+    const [mainRes, setMainRes] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getMainRes();
+        setMainRes(res);
+      } catch (err) {
+        console.error("Failed to fetch main CMS data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading || !mainRes) return null;
+
   return (
     <div className="relative min-h-screen bg-white text-white">
       {/* Navbar */}
       <Header1/>
 
-      {/* Spline background */}
-      <div className="absolute top-0 left-0 w-full h-[100vh] sm:h-[80vh] z-0">
-        <iframe
-          src="https://my.spline.design/cubiccopy-58ccfada32ada29de256862c00e83a1f/"
-          frameBorder="0"
-          width="100%"
-          height="100%"
-        />
-      </div>
-
       {/* Hero content */}
-      <HeroSection/>
+      <HeroSection data={mainRes} />
 
       {/* Logos */}
-      <InfiniteSliderBasic/>
+      <InfiniteSliderBasic data={mainRes} />
 
       <div className="flex items-center justify-center" > 
-      <GridViewCard/>
-            </div>
+   <GridViewCard data={mainRes}/>
+      </div>
 
       <div className="flex items-center justify-center" > 
       <PaymentGridViewCard/>

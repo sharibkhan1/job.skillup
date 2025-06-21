@@ -115,7 +115,7 @@ const backSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
     <div className="pointer-events-none absolute right-0 -bottom-5  md:-bottom-10 w-full h-14 md:h-40 z-10 bg-gradient-to-t from-[#f2f8f8] to-white/10" />
 
     <p className="text-[0.6rem] sm:text-sm  md:text-xl text-gray-500">Acme LLC — Offer</p>
-    <h3 className="text-xl sm:text-2xl md:text-6xl font-normal pr-5  text-black mt-1"><TextScramble>$80,000</TextScramble></h3>
+    <div className="text-xl sm:text-2xl md:text-6xl font-normal pr-5  text-black mt-1"><TextScramble>$80,000</TextScramble></div>
   
     <div className="mt-3 sm:mt-4 flex justify-between text-[0.6rem] sm:text-sm md:text-lg text-gray-700 pb-2">
       <div className="w-full">

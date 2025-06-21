@@ -73,9 +73,9 @@ export default function GyngerCapitalCard() {
               <Image src="/svgs/inline_svg_35.1.svg" alt="Icon" width={20} height={20} className="object-contain" />
               Available capital
             </div>
-            <p className="text-2xl text-center md:text-4xl font-medium text-[#0c1a1a] mt-2">
+            <div className="text-2xl text-center md:text-4xl font-medium text-[#0c1a1a] mt-2">
               <TextScramble>$400,000.00</TextScramble>
-            </p>
+            </div>
             <div className="h-2 w-full bg-gray-200 rounded-full mt-3 overflow-hidden">
               <div className="w-[70%] h-full bg-green-400 rounded-full"></div>
             </div>

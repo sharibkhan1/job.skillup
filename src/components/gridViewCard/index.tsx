@@ -1,31 +1,32 @@
-"use client"
+"use client";
+import React, { useRef, useEffect, useState } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import ArrowHover from "../arrowhover";
 import animation1 from "../../../public/lottie/680bca7b0266b7a0714451bf_866606df10f2175bd6a4bfbc95f4ba98_Home%201.json";
 import animation2 from "../../../public/lottie/680bca99e56a1e77926028fe_78c15bd835b2893dd6bc19ad984bf274_Home%202.json";
 import animation3 from "../../../public/lottie/680bcab988eb3e3db02241ab_959f47ad36eb419a9f252d6c928a2714_Home%203.json";
-import React, { useRef } from "react";
-import ArrowHover from "../arrowhover";
 
-const features = [
-  {
-    title: "Control burn",
-    description:
-      "Smooth out chunky payables, conserve your working capital, and invest where it matters most.",
-    animation: animation1,
-  },
-  {
-    title: "Accelerate revenues",
-    description:
-      "Streamline receivables and close cash gaps without compromising customer relationships.",
-    animation: animation2,
-  },
-  {
-    title: "Grow with confidence",
-    description:
-      "Embed Gynger across your financial workflows to optimize key performance indicators and achieve lasting success.",
-    animation: animation3,
-  },
-];
+const animations = [animation1, animation2, animation3];
+
+type CardItem = {
+  cardtitle: string;
+  cardsub: string;
+};
+
+type LMSResponse = {
+    block: {
+      gridview:{
+  buttitle: string;
+  title: {
+    children: {
+      type: string;
+      children: { text: string; italic?: boolean }[];
+    }[];
+  };
+  cardd: CardItem[];
+      };
+  }[];
+};
 
 const FeatureCard: React.FC<{
   title: string;
@@ -53,50 +54,61 @@ const FeatureCard: React.FC<{
         </p>
       </div>
       <div className="w-full h-max">
-        <Lottie
-          lottieRef={lottieRef}
-          animationData={animation}
-          loop
-        />
+        <Lottie lottieRef={lottieRef} animationData={animation} loop />
       </div>
     </div>
   );
 };
 
-const GridViewCard = () => {
+const GridViewCard = ({data}:{data:LMSResponse}) => {
+
+    const gridview  = data?.block?.find((b: any) => b.gridview)?.gridview;
+
+  if (!gridview ) return null;
+  // Extracting title from rich text
+  const heading =
+    gridview?.title?.children?.[0]?.children
+      .map((child) =>
+        child.italic ? `<span class="italic">${child.text}</span>` : child.text
+      )
+      .join(" ") || "";
+
   return (
     <section className="py-16 w-full bg-white">
       <div className="px-4 sm:px-6 md:px-12 xl:px-20 2xl:px-[20rem]">
-        {/* Heading for all screens */}
+        {/* Heading */}
         <div className="flex flex-col lg:flex-row items-center lg:items-end justify-between mb-10 text-center lg:text-left">
-          <h2 className="text-3xl hidden min-sm:block md:text-5xl text-black">
-            Your blueprint for <span className="italic">lasting growth</span>
-          </h2>
-          <h2 className="text-3xl block sm:hidden md:text-5xl text-black">
-            Your blueprint for<br /> <span className="italic">lasting growth</span>
-          </h2>
-
-          {/* Talk to us - hidden below lg */}
+          <h2
+            className="text-3xl hidden min-sm:block md:text-5xl text-black"
+            dangerouslySetInnerHTML={{ __html: heading }}
+          />
+          <h2
+            className="text-3xl block sm:hidden md:text-5xl text-black"
+            dangerouslySetInnerHTML={{
+              __html: heading.replace(" ", "<br />"),
+            }}
+          />
+          {/* Talk to us - Desktop */}
           <div className="hidden lg:inline-flex items-end ">
-            <ArrowHover text={"Talk to us"} />
+            <ArrowHover text={gridview.buttitle} />
           </div>
         </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:pt-10 lg:grid-cols-3 gap-4">
-          {features.map((item, index) => (
+          {gridview.cardd.map((item, index) => (
             <FeatureCard
               key={index}
-              title={item.title}
-              description={item.description}
-              animation={item.animation}
+              title={item.cardtitle}
+              description={item.cardsub}
+              animation={animations[index % animations.length]}
             />
           ))}
         </div>
 
-        {/* Talk to us - only shown below lg */}
-        <div className="lg:hidden inline-flex items-end mt-10 w-full justify-center ">
-          <ArrowHover text={"Talk to us"} />
+        {/* Talk to us - Mobile */}
+        <div className="lg:hidden inline-flex items-end mt-10 w-full justify-center">
+          <ArrowHover text={gridview.buttitle} />
         </div>
       </div>
     </section>

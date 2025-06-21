@@ -10,10 +10,11 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import {  ChevronDownIcon, ChevronRightIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { getHeaderRes } from "../../../helper";
 
 export interface NavItem {
   title: string;
@@ -29,119 +30,28 @@ export interface SubItem {
 }
 
 function Header1() {
-  const navigationItems:NavItem[] = [
-  {
-    title: "For buyers",
-    href: "/for-buyers",
-  },
-  {
-    title: "For sellers",
-    href: "/for-sellers",
-  },
-{
-    title: "Products",
-    items: [
-      {
-        title: "Gynger Pay",
-        href: "/products/gynger-pay",
-        image:"/svgs/inline_svg_35.1.svg"
-      },
-      {
-        title: "AP Financing",
-        href: "/products/ap-financing",
-                image:"/svgs/67e9290f30d76b05050b7ae9_8501452a804098da8241ea0c9eeb7ea8_capital-ap_icon.svg"
-
-      },
-      {
-        title: "AR Financing",
-        href: "/products/ar-financing",
-        image:"/svgs/67e929220a753debb8493c93_5c05a343d29c8100431cb6a39f7dccff_capital-ar_icon.svg"
-      },
-    ],
-    botItems:[
-              {
-        title: "undate Pay",
-        href: "/products/gynger-pay",
-      },
-      {
-        title: "AP Integration",
-        href: "/products/ap-financing",
-      },
-    ]
-  },
-    {
-      title: "Solutions",
-      items: [
-        {
-          title: "For finance",
-          href: "/about",
-                  image:"/svgs/inline_svg_35.svg"
-        },
-        {
-          title: "For go-to-market",
-          href: "/fundraising",
-                  image:"/svgs/inline_svg_35.svg"
-        },
-        {
-          title: "For AI",
-          href: "/investors",
-                  image:"/svgs/inline_svg_35.svg"
-        },
-        {
-          title: "For software",
-          href: "/contact",
-                  image:"/svgs/inline_svg_35.svg"
-        },
-
-
-      ],
-        botItems:[
-            {
-          title: "What does Gynger finace>",
-          href: "/contact",
-        },    
-        ]
-    },
-      {
-    title: "Resources",
-items: [
-        {
-          title: "Documentation",
-          href: "/about",
-        },
-        {
-          title: "Customer stories",
-          href: "/fundraising",
-        },
-        {
-          title: "Blogs",
-          href: "/investors",
-        },
-      ],  
-    },
-  {
-    title: "Company",
- items: [
-        {
-          title: "About us",
-          href: "/about",
-        },
-        {
-          title: "Newsroom",
-          href: "/fundraising",
-        },
-        {
-          title: "Careers",
-          href: "/investors",
-        },
-      ],
-  },
-  ];
-
   const [isOpen, setOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 const [openDropdown, setOpenDropdown] = useState(false);
 
+      const [header, setHeader] = useState<any>(null)
+      const [loading, setLoading] = useState(true)
+    
+      useEffect(() => {
+        const fetchHeader = async () => {
+          try {
+            const data = await getHeaderRes()
+            setHeader(data)
+          } catch (err) {
+            console.error('Failed to fetch header data:', err)
+          } finally {
+            setLoading(false)
+          }
+        }
+    
+        fetchHeader()
+      }, [])
+      
   const toggleSubmenu = (title: string) => {
     if (openSubmenu === title) {
       setOpenSubmenu(null);
@@ -185,100 +95,95 @@ const [openDropdown, setOpenDropdown] = useState(false);
                 />
               </motion.div>          </Button>
         </div>
-           <Image
-                        src="/svgs/inline_svg_1.0.svg"
-                        alt="Logo"
-                        width={90}
-                        height={30}
-                      />
-
+{header?.logoimage?.url && (
+  <Image
+    src={header.logoimage.url}
+    alt="Logo"
+    width={90}
+    height={30}
+  />
+)}
         {/* Center - Navigation */}
         <div className="hidden  lg:flex items-center justify-center">
           <NavigationMenu>
-            <NavigationMenuList className="flex gap-1">
-              {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.title}>
-                  {item.href ? (
-                    <Link href={item.href} legacyBehavior passHref>
-<NavigationMenuLink className="group relative px-1 py-1 text-sm font-medium text-white transition-none">
-  {item.title}
-  <span className="underline-animate absolute left-[10%] bottom-0 w-[80%] h-[2px]"></span>
-</NavigationMenuLink>
+<NavigationMenuList className="flex gap-1">
+  {/* Center NavLinks from singlink */}
+  {header?.navlinks?.singlink?.map((title: string) => (
+    <NavigationMenuItem key={title}>
+      <NavigationMenuLink className="group relative px-1 py-1 text-sm font-medium text-white transition-none">
+        {title}
+        <span className="underline-animate absolute left-[10%] bottom-0 w-[80%] h-[2px]"></span>
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  ))}
 
-                    </Link>
-                  ) : (
-                    <>
-<NavigationMenuTrigger className="group relative px-2 py-1 text-sm font-medium text-white transition-none">
-  {item.title}
-  <span className="absolute left-[10%] bottom-0 w-[80%] h-[2px]"></span>
-</NavigationMenuTrigger>
+  {/* Dropdowns from multilink */}
+  {header?.navlinks?.multilink?.map((item: any) => (
+    <NavigationMenuItem key={item.multititle}>
+      <NavigationMenuTrigger className="group relative px-2 py-1 text-sm font-medium text-white transition-none">
+        {item.multititle}
+        <span className="absolute left-[10%] bottom-0 w-[80%] h-[2px]"></span>
+      </NavigationMenuTrigger>
 
+      <NavigationMenuContent className="!w-[950px] max-w-[80vw] p-0 bg-white rounded-xl shadow-lg flex border-none overflow-hidden">
+        <div className="relative w-[45%] min-h-[400px] bg-[#022b29]">
+          {header?.navlinkimg?.url && (
+  <Image
+    src={header.navlinkimg.url}
+            alt="menu bg"
+            fill
+            className="object-cover"
+  />
+)}
+          <p className="absolute bottom-9 left-9 text-white/90 text-4xl font-light z-10">
+            {item.multititle}
+          </p>
+        </div>
 
-<NavigationMenuContent className="!w-[950px]  max-w-[80vw] p-0 bg-white rounded-xl shadow-lg flex border-none overflow-hidden">
-  {/* Left Side Image */}
-  <div className="relative w-[45%] min-h-[400px] bg-[#022b29]">
-    <Image
-      src="/navbl.jpg" // Replace with your actual image path
-      alt="menu bg"
-      fill
-      className="object-cover"
-    />
-    <p className="absolute bottom-9 left-9 text-white/90 text-4xl font-light z-10">
-      {item.title}
-    </p>
-  </div>
-
-  {/* Right Side Content */}
-  <div className="w-[55%] p-8 flex flex-col justify-between">
-    {/* Top Items */}
-    <div className="flex flex-col">
-      {item.items?.map((subItem) => (
-        <NavigationMenuLink
-      key={subItem.title}
-      href={subItem.href}
-      className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-[#EBF2F2] rounded-md transition-colors"
-    >
-      <div className="flex items-center gap-3">
-        {/* Optional Image Icon */}
-        {subItem.image && (
-          <Image
-            src={subItem.image}
-            alt={subItem.title + " icon"}
-            width={20}
-            height={20}
-            className="object-contain"
-          />
-        )}
-        <span>{subItem.title}</span>
-      </div>
-
-      {/* Chevron */}
-      <ChevronRightIcon className="w-4 h-4 dark-green-text" />
-    </NavigationMenuLink>
-      ))}
-    </div>
-
-    {/* Bottom Items */}
-    <div className="flex flex-col">
-      {item.botItems?.map((subItem) => (
-        <NavigationMenuLink
-          key={subItem.title}
-          href={subItem.href}
-          className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-[#EBF2F2] rounded-md transition-colors"
-        >
-          <span>{subItem.title}</span>
-          <ChevronRightIcon className="w-4 h-4 dark-green-text" />
-        </NavigationMenuLink>
-      ))}
-    </div>
-  </div>
-</NavigationMenuContent>
-
-                    </>
+        <div className="w-[55%] p-8 flex flex-col justify-between">
+          {/* Top Items */}
+          <div className="flex flex-col">
+            {item.upperlink?.map((subItem: any) => (
+              <NavigationMenuLink
+                key={subItem.linktitle}
+                href="#"
+                className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-[#EBF2F2] rounded-md transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  {subItem.linklogo?.url && (
+                    <Image
+                      src={subItem.linklogo.url}
+                      alt={subItem.linktitle + " icon"}
+                      width={20}
+                      height={20}
+                      className="object-contain"
+                    />
                   )}
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
+                  <span>{subItem.linktitle}</span>
+                </div>
+                <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+              </NavigationMenuLink>
+            ))}
+          </div>
+
+          {/* Bottom Items */}
+          <div className="flex flex-col">
+            {item.lowertitle?.map((bottomTitle: string) => (
+              <NavigationMenuLink
+                key={bottomTitle}
+                href="#"
+                className="flex justify-between items-center px-3 py-2 text-lg font-medium text-[#022b29] hover:bg-[#EBF2F2] rounded-md transition-colors"
+              >
+                <span>{bottomTitle}</span>
+                <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+              </NavigationMenuLink>
+            ))}
+          </div>
+        </div>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  ))}
+</NavigationMenuList>
           </NavigationMenu>
         </div>
 </div>
@@ -295,7 +200,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
     className="light-green rounded-3xl px-[1.3rem] py-[1.4rem] dark-green-text"
     onClick={() => setOpenDropdown(!openDropdown)}
   >
-    Get started
+  {header?.startbutton?.signinmenu || "Get started"}
   </Button>
   
   <AnimatePresence>
@@ -308,61 +213,27 @@ const [openDropdown, setOpenDropdown] = useState(false);
         className="absolute right-0 top-full mt-6 w-64 rounded-xl bg-white shadow-lg z-50 overflow-hidden"
       >
         <div className="p-2">
-          <Link
-            href="/option1"
-            className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
-          >
-            <div className="flex gap-2" >
-
-            
-                      <Image
-                        src="/svgs/inline_svg_35.1.svg"
-                        alt="ADSad"
-                        width={20}
-                        height={20}
-                        className="object-contain"
-                      />
-            <span>Option 1</span>
-            </div>
-            <ChevronRightIcon className="w-4 h-4 dark-green-text" />
-          </Link>
-          <Link
-            href="/option2"
-            className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
-          >
-                  <div className="flex gap-2" >
-
-            
-                      <Image
-                        src="/svgs/inline_svg_35.1.svg"
-                        alt="ADSad"
-                        width={20}
-                        height={20}
-                        className="object-contain"
-                      />
-            <span>Option 2</span>
-            </div>
-            <ChevronRightIcon className="w-4 h-4 dark-green-text" />
-          </Link>
-          <div className="md:hidden ">
-            <Link
-              href="/signin"
-              className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
-            >
-            <div className="flex gap-2" >
-
-            
-                      <Image
-                        src="/svgs/inline_svg_35.1.svg"
-                        alt="ADSad"
-                        width={20}
-                        height={20}
-                        className="object-contain"
-                      />
-            <span>Sign IN</span>
-            </div>              <ChevronRightIcon className="w-4 h-4 dark-green-text" />
-            </Link>
-          </div>
+{header?.startbutton?.link?.map((linkItem: any) => (
+  <Link
+    key={linkItem.linktitle}
+    href={`/${linkItem.linktitle.toLowerCase().replace(/\s+/g, '-')}`} // OR linkItem.href if it exists
+    className="flex rounded-md justify-between items-center px-4 py-3 text-sm font-medium text-[#022b29] hover:bg-[#EBF2F2] transition-colors"
+  >
+    <div className="flex gap-2">
+      {linkItem.linklogo?.url && (
+        <Image
+          src={linkItem.linklogo.url}
+          alt={linkItem.linktitle}
+          width={20}
+          height={20}
+          className="object-contain"
+        />
+      )}
+      <span>{linkItem.linktitle}</span>
+    </div>
+    <ChevronRightIcon className="w-4 h-4 dark-green-text" />
+  </Link>
+))}
         </div>
       </motion.div>
     )}
@@ -372,79 +243,93 @@ const [openDropdown, setOpenDropdown] = useState(false);
 
         {/* Mobile menu */}
 <AnimatePresence>
-          {isOpen && (
+  {isOpen && (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 20 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+      className="absolute max-h-[75vh] overflow-y-auto rounded-3xl z-20 top-20 left-0 right-0 bg-white border-t border-black/10 flex flex-col w-full p-8 gap-6 lg:hidden"
+    >
+      {/* Single Links (No dropdown) */}
+      {header?.navlinks?.singlink?.map((title: string) => (
+        <Link
+          key={title}
+          href="#"
+          className="flex justify-between pb-4 border-b border-black/10 items-center text-black hover:text-black/80 transition-colors"
+        >
+          <span className="text-lg font-sans">{title}</span>
+        </Link>
+      ))}
+
+      {/* MultiLinks with dropdown */}
+      {header?.navlinks?.multilink?.map((item: any) => (
+        <div key={item.multititle} className="flex flex-col gap-3">
+          <button
+            onClick={() => toggleSubmenu(item.multititle)}
+            className="flex justify-between pb-4 border-b border-black/10 items-center w-full text-black"
+          >
+            <span className="text-lg font-sans">{item.multititle}</span>
             <motion.div
-                              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 20 }}
-              exit={{ opacity: 0, y: -20 }}
+              animate={{
+                rotate: openSubmenu === item.multititle ? 180 : 0
+              }}
               transition={{ duration: 0.2 }}
-              className="absolute max-h-[75vh] overflow-y-auto rounded-3xl z-20 top-20 left-0 right-0 bg-white border-t border-black/10 flex flex-col w-full p-8 gap-6 lg:hidden"
             >
-                
-              {navigationItems.map((item) => (
-                <div key={item.title} className="">
-                  <div className="flex flex-col gap-3">
-                    {item.href ? (
-                      <Link
-                        href={item.href}
-                        className="flex justify-between  pb-4 border-b border-black/10 items-center text-black hover:text-black/80 transition-colors"
-                      >
-                        <span className="text-lg font-sans">{item.title}</span>
-                      </Link>
-                    ) : (
-                      <div className="flex flex-col gap-3">
-                        <button
-                          onClick={() => toggleSubmenu(item.title)}
-                          className="flex justify-between pb-4 border-b border-black/10 items-center w-full text-black"
-                        >
-                          <span className="text-lg">{item.title}</span>
-                          <motion.div
-                            animate={{
-                              rotate: openSubmenu === item.title ? 180 : 0
-                            }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <ChevronDownIcon className="w-4 h-4 stroke-1" />
-                          </motion.div>
-                        </button>
-                        {openSubmenu === item.title && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="overflow-hidden space-y-4 px-6 pt-2 flex flex-col gap-3"
-                          >
-                            {item.items?.map((subItem) => (
-                              <Link
-                                key={subItem.title}
-                                href={subItem.href}
-                                className="flex font-sans justify-between text-lg items-center text-black hover:text-black transition-colors"
-                              >
-                                <span>{subItem.title}</span>
-                                <ChevronRightIcon className="w-4 h-4 stroke-1" />
-                              </Link>
-                            ))}
-                            {item.botItems?.map((subItem) => (
-                              <Link
-                                key={subItem.title}
-                                href={subItem.href}
-                                className="flex font-sans justify-between text-lg items-center text-black hover:text-black transition-colors"
-                              >
-                                <span>{subItem.title}</span>
-                                <ChevronRightIcon className="w-4 h-4 stroke-1" />
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </div>
+              <ChevronDownIcon className="w-4 h-4 stroke-1" />
+            </motion.div>
+          </button>
+
+          {openSubmenu === item.multititle && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden space-y-4 px-4 pt-2 flex flex-col gap-4"
+            >
+              {/* Upper Links First */}
+              {item.upperlink?.map((subItem: any) => (
+                <Link
+                  key={subItem.linktitle}
+                  href="#"
+                  className="flex items-center justify-between text-lg text-black hover:text-black/80 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    {subItem.linklogo?.url && (
+                      <Image
+                        src={subItem.linklogo.url}
+                        alt={subItem.linktitle + " icon"}
+                        width={20}
+                        height={20}
+                        className="object-contain"
+                      />
                     )}
+                    <span>{subItem.linktitle}</span>
                   </div>
-                </div>
+                  <ChevronRightIcon className="w-4 h-4 stroke-1" />
+                </Link>
+              ))}
+
+              {/* Lower Links After */}
+              {item.lowertitle?.map((bottomTitle: string) => (
+                <Link
+                  key={bottomTitle}
+                  href="#"
+                  className="flex justify-between text-lg text-black hover:text-black/80 transition-colors"
+                >
+                  <span>{bottomTitle}</span>
+                  <ChevronRightIcon className="w-4 h-4 stroke-1" />
+                </Link>
               ))}
             </motion.div>
           )}
-        </AnimatePresence>
+        </div>
+      ))}
+    </motion.div>
+  )}
+</AnimatePresence>
+
       </div>
     </header>
   );
