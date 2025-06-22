@@ -2,22 +2,7 @@
 import Image from "next/image";
 import { InfiniteSlider } from ".";
 import React from "react";
-
-type Logo = {
-  uid: string;
-  url: string;
-  title?: string;
-};
-
-type MovingCardBlock = {
-  movingcard: {
-    fillogo: Logo[];
-  };
-};
-
-type CMSResponse = {
-  block: MovingCardBlock[];
-};
+import { CMSResponse } from "@/lib/types";
 
 const InfiniteSliderBasic = ({data}:{data:CMSResponse}) => {
   const logos = data?.block?.find((b) => b.movingcard)?.movingcard?.fillogo ?? [];

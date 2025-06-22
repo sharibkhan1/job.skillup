@@ -1,17 +1,7 @@
 "use client"
 import React from 'react'
 import Inputcostom from '../inputcostom'
-
-type HeroBlock = {
-  block: {
-    hero: {
-      title: string;
-      subtitle: string;
-      buttitle?: string;
-      bglinkjson: string;
-    };
-  }[];
-};
+import { HeroBlock } from '@/lib/types';
 
 const HeroSection = ({data}:{data:HeroBlock}) => {
   const hero = data?.block?.find((b) => b.hero)?.hero;

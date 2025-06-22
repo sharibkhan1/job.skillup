@@ -2,24 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { TestimonialData } from '@/lib/types';
 
-export interface ImageAsset {
-  url: string;
-}
-
-export interface TestimonialCard {
-  name: string;
-  profess: string;
-  detail: string;
-  userimage: ImageAsset;
-}
-
-export interface TestimonialData {
-  title: string;
-  card: TestimonialCard[];
-}
-
-export interface BlockData {
+interface BlockData {
   block?: Array<{
     testo?: TestimonialData;
   }>;
@@ -112,7 +97,7 @@ const TestimonialPage = ({data}:{data:BlockData }) => {
       <div
         key={i}
         className={`flex-shrink-0 px-4 py-4 ${
-          isMobile ? 'w-full mx-auto' : 'w-[50%] ml-10 mx-50'
+          isMobile ? 'w-full mx-auto' : 'w-[50%] ml-10 2xl:ml-20 mx-50'
         } bg-white`}
       >
         <div className="flex items-center gap-4 mb-4">

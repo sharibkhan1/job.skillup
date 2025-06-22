@@ -2,32 +2,41 @@
 import { ArrowRight } from "lucide-react";
 import { TextScramble } from "../text-scamble";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
+import { SecondCards } from "@/lib/types";
 
-type ImageAsset = {
-  url: string;
-  title: string;
-};
-
-type SecondCard = {
-  title: string;
-  subtitle: string;
-  imagew: ImageAsset;
-  button: {
-    buttutle: string;
-    buticon: ImageAsset;
-  }[];
-  cardd: {
-    cartitle: string;
-    cardmoney: string;
-    cardimg: ImageAsset;
-  };
-};
-export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCard }) {
+export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCards }) {
+      const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollDirection = useMotionValue(0);
   const backSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
+
+    // Intersection Observer to trigger animation when component is visible
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        },
+        {
+          root: null,
+          rootMargin: "-40px",
+          threshold: 0.1, // Trigger when 10% of component is visible
+        }
+      );
+  
+      if (containerRef.current) {
+        observer.observe(containerRef.current);
+      }
+  
+      return () => {
+        if (containerRef.current) {
+          observer.unobserve(containerRef.current);
+        }
+      };
+    }, []);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -53,7 +62,7 @@ export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCa
 
       {/* LEFT */}
       <div
-        className="relative px-5 lg:px-12 pt-5 lg:pl-20 lg:pt-10 md:pb-20 z-10 w-full text-center lg:text-left flex flex-col justify-between"
+        className="relative px-5 lg:px-12 pt-5 lg:pl-20 lg:pt-10 lg:pb-20 z-10 w-full text-center lg:text-left flex flex-col justify-between"
       >
         <h2 className="text-3xl md:text-5xl text-[#0c1a1a] font-medium">{secondcard.title}</h2>
         <p className="lg:mt-[40%] mt-6 text-base md:text-xl text-[#0c4242] mx-auto lg:mx-0">
@@ -70,9 +79,13 @@ export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCa
       </div>
 
       {/* RIGHT */}
-      <motion.div
-        initial={{ y: 300, opacity: 0 }}
+        <AnimatePresence>
+          {isVisible && (
+                    <motion.div
+              key="ssec-card"
+        initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -100, opacity: 0 }}
         transition={{ type: "spring", stiffness: 50, damping: 10, delay: 0.2 }}
         style={{ y: backSpring }}
         className="relative z-10 w-full flex justify-center items-center p-6 lg:p-12"
@@ -98,7 +111,9 @@ export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCa
             </div>
           </div>
         </div>
-      </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
     </section>
   );
 }

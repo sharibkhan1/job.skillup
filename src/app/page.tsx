@@ -11,6 +11,8 @@ import SecFoot from "@/components/secfooter";
 import Footer from "@/components/footer";
 import HeroSection from "@/components/HeroSection";
 import { getMainRes } from "../../helper";
+import Image from 'next/image';
+import { Loader2 } from "lucide-react";
 
 export default function Page() {
 
@@ -32,8 +34,27 @@ export default function Page() {
     fetchData();
   }, []);
 
-  if (loading || !mainRes) return null;
+if (loading) {
+  return (
+    <div className="w-screen bg-black h-screen flex flex-col items-center justify-center">
+      <Image
+        src="/svgs/inline_svg_1.0.svg"
+        width={400}
+        height={300}
+        alt="logo"
+      />
+      <Loader2 className="animate-spin text-[#9FE29E] mt-10 w-8 h-8 " />
+    </div>
+  );
+}
 
+if (!mainRes) {
+  return (
+    <div className="w-screen h-screen flex flex-col items-center justify-center">
+      <p className="text-black text-8xl">No data!!!!</p>
+    </div>
+  );
+}
   return (
     <div className="relative min-h-screen bg-white text-white">
       {/* Navbar */}

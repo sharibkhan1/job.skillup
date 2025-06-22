@@ -15,45 +15,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { getHeaderRes } from "../../../helper";
+import { HeaderData } from "@/lib/types";
 
-// types/header.ts
- interface ImageAsset {
-  url: string;
-  title?: string; // Optional since it's not used in your component
-}
-
-interface NavLinkItem {
-  linklogo: ImageAsset | null;
-  linktitle: string;
-}
-
-interface MultiLinkItem {
-  multititle: string;
-  upperlink: NavLinkItem[];
-  lowertitle: string[];
-}
-
-interface NavLinks {
-  singlink: string[];
-  multilink: MultiLinkItem[];
-}
-
- interface StartButtonLink {
-  linklogo: ImageAsset | null;
-  linktitle: string;
-}
-
-interface StartButton {
-  signinmenu: string;
-  link: StartButtonLink[];
-}
-
-interface HeaderData {
-  logoimage: ImageAsset;
-  navlinkimg: ImageAsset;
-  navlinks: NavLinks;
-  startbutton: StartButton;
-}
 
 function Header1() {
   const [isOpen, setOpen] = useState(false);
@@ -85,6 +48,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
       setOpenSubmenu(title);
     }
   };
+  
   return (
 <header className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 rounded-[3rem] w-[96%] max-w-[82rem] border border-[#cefae849] backdrop-blur-lg bg-gradient-to-b from-[#022b29]/70 to-[#022b29]/70">
   <div className=" relative mx-auto flex min-h-20 items-center justify-between px-3 sm:px-5 lg:px-6">
@@ -207,6 +171,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
           </div>
         </div>
       </NavigationMenuContent>
+      
     </NavigationMenuItem>
   ))}
 </NavigationMenuList>

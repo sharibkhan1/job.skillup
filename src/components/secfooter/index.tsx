@@ -5,21 +5,9 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import Image from "next/image";
 import Inputcostomw from '../inputcostomw';
 import { ArrowRight } from 'lucide-react';
+import { PrefooterData } from '@/lib/types';
 
-export interface ImageAsset {
-  url: string;
-}
-
-export interface PrefooterData {
-  title: string;
-  frontimg: ImageAsset;
-  backimg: ImageAsset;
-  buttitle: string;
-  bottomtitle: string;
-  bottombuttext: string;
-}
-
-export interface BlockData {
+interface BlockData {
   block?: Array<{
     prefooter?: PrefooterData;
   }>;

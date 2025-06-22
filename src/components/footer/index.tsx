@@ -2,24 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Inputcostom from '../inputcostom';
-
-export interface ImageAsset {
-  url: string;
-}
-
-export interface FooterData {
-  logo: ImageAsset;
-  subtitle: string;
-  buttitle: string;
-  address: string;
-  bottom1: ImageAsset;
-  bottomimg2: ImageAsset;
-  linkn: {
-    link: string[];
-  };
-  linkdomain: string[];
-  cotact: string;
-}
+import { FooterData } from '@/lib/types';
 
 export interface BlockData {
   block?: Array<{

@@ -5,44 +5,8 @@ import animation3 from "../../../public/lottie/680bcc5659a2c1e948cfcd64_AI.json"
 import Image from 'next/image'; // Make sure this import is at the top
 import ArrowHover from '../arrowhover';
 import { SecInfiniteSlider } from '../sec-slider';
+import { BlockData } from '@/lib/types';
 
-// types/convince.ts
-export interface ImageAsset {
-  url: string;
-}
-
-export interface MovingLogo {
-  logos: ImageAsset[];
-}
-
-export interface CardContent {
-  bgcard: ImageAsset;
-  title: string;
-  subtitle: string;
-  sidelogo: ImageAsset;
-}
-
-export interface MovingCardContent extends CardContent {
-  botttom: string;
-  movinglogo: MovingLogo;
-}
-
-export interface ConvinceData {
-  title: {
-    children: {
-      type: string;
-      children: { text: string; italic?: boolean }[];
-    }[];
-  };
-  movingcard: MovingCardContent;
-  card: CardContent;
-}
-
-export interface BlockData {
-  block?: Array<{
-    convince?: ConvinceData;
-  }>;
-}
 const ConvinceComp = ({data}:{data:BlockData }) => {
       const leftRef = useRef<HTMLDivElement>(null);
   const [rightHeight, setRightHeight] = useState<number | undefined>(undefined);

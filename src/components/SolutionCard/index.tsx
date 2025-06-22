@@ -1,32 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
 import { ArrowRight, Check } from 'lucide-react';
+import { LMSResponseSolution } from '@/lib/types';
 
-type ImageAsset = {
-  url: string;
-  title: string;
-};
-
-type SolutionCard = {
-  titimage: ImageAsset;
-  userimage: ImageAsset;
-  buttitle: string;
-  infoo: string[];
-};
-
-type SolutionsBlock = {
-  title: string;
-  buttitle: string;
-  cards: SolutionCard[];
-};
-
-type LMSResponse = {
-  block: {
-    solutions?: SolutionsBlock;
-  }[];
-};
-
-const SolutionsContainer = ({data}:{data:LMSResponse}) => {
+const SolutionsContainer = ({data}:{data:LMSResponseSolution}) => {
 
   const solution = data?.block?.find((b) => b.solutions)?.solutions;
   if (!solution) return null;

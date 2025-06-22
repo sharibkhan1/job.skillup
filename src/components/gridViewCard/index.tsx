@@ -5,28 +5,9 @@ import ArrowHover from "../arrowhover";
 import animation1 from "../../../public/lottie/680bca7b0266b7a0714451bf_866606df10f2175bd6a4bfbc95f4ba98_Home%201.json";
 import animation2 from "../../../public/lottie/680bca99e56a1e77926028fe_78c15bd835b2893dd6bc19ad984bf274_Home%202.json";
 import animation3 from "../../../public/lottie/680bcab988eb3e3db02241ab_959f47ad36eb419a9f252d6c928a2714_Home%203.json";
+import { LMSResponse } from "@/lib/types";
 
 const animations = [animation1, animation2, animation3];
-
-type CardItem = {
-  cardtitle: string;
-  cardsub: string;
-};
-
-type LMSResponse = {
-    block: {
-      gridview:{
-  buttitle: string;
-  title: {
-    children: {
-      type: string;
-      children: { text: string; italic?: boolean }[];
-    }[];
-  };
-  cardd: CardItem[];
-      };
-  }[];
-};
 
 const FeatureCard: React.FC<{
   title: string;

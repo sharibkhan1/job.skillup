@@ -5,87 +5,43 @@ import { TextScramble } from "../text-scamble";
 import Capitalcard from "./capitalcard";
 import ArrowHover from "../arrowhover";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useSpring, } from "framer-motion";
+import { LMSResponses } from "@/lib/types";
 
-type RichTextChild = {
-  text: string;
-  italic?: boolean;
-};
-
-type RichTextNode = {
-  type: string;
-  children: RichTextChild[];
-};
-
-type ImageAsset = {
-  url: string;
-  title: string;
-};
-
-type ButtonIcon = {
-  butttile: string;
-  bicon: ImageAsset;
-};
-
-type FirstCard = {
-  title: string;
-  subtitle: string;
-  button: {
-    buttitle: string;
-    butimage: ImageAsset;
-  }[];
-  frontcard: {
-    ftitle: string;
-    fmoney: string;
-    fbutton: string;
-    opt1: string;
-    opt2: string;
-  };
-  backcard: {
-    btitle: string;
-    bmoney: string;
-    bbut: ButtonIcon[];
-  };
-};
-
-type SecondCard = {
-  title: string;
-  subtitle: string;
-  imagew: ImageAsset;
-  button: {
-    buttutle: string;
-    buticon: ImageAsset;
-  }[];
-  cardd: {
-    cartitle: string;
-    cardmoney: string;
-    cardimg: ImageAsset;
-  };
-};
-
-type PaymentGridData = {
-  title: {
-    children: RichTextNode[];
-  };
-  buttitle: string;
-  firstcard: FirstCard;
-  secondcard: SecondCard;
-};
-
-type LMSResponse = {
-  block: {
-    paymentgrid?: PaymentGridData;
-  }[];
-};
-
-
-const PaymentGridViewCard = ({ data }: { data: LMSResponse }) => {
+const PaymentGridViewCard = ({ data }: { data: LMSResponses }) => {
   const [selected, setSelected] = useState<("monthly" | "terms")[]>([]);
   const [submitted, setSubmitted] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 const scrollDirection = useMotionValue(0); // raw delta
 const frontSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
 const backSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
+
+  // Intersection Observer to trigger animation when component is visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.1, // Trigger when 10% of component is visible
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
   let lastY = window.scrollY;
@@ -206,10 +162,14 @@ const secondCard = paymentgrid.secondcard;
 {/* RIGHT CONTENT */}
 <div className="relative z-10 w-full flex justify-end">
   {/* BACK CARD - positioned at bottom right */}
-              <motion.div
+        <AnimatePresence>
+          {isVisible && (
+                    <motion.div
+              key="back-card"
                 style={{ y: backSpring }} // 👈 Smooth upward/downward
-              initial={{ y: 300, opacity: 0 }}
+              initial={{ y: -100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -100, opacity: 0 }}
               transition={{ 
                 type: "spring",
                 stiffness: 50,
@@ -246,11 +206,17 @@ const secondCard = paymentgrid.secondcard;
     ))}
   </div>
             </motion.div>
+          )}
+        </AnimatePresence>
 
   {/* FRONT CARD - centered vertically and slightly left of center */}
-              <motion.div
-              initial={{ y: 300, opacity: 0 }}
+                      <AnimatePresence>
+          {isVisible && (
+            <motion.div
+              key="front-card"
+              initial={{ y: -100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -100, opacity: 0 }}
               transition={{ 
                 type: "spring",
                 stiffness: 50,
@@ -319,6 +285,8 @@ const secondCard = paymentgrid.secondcard;
         </div>
       )}
             </motion.div>
+          )}
+        </AnimatePresence>
 </div>
         </div>
 
