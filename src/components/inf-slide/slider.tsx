@@ -1,8 +1,7 @@
 "use client";
 import Image from "next/image";
 import { InfiniteSlider } from ".";
-import { getMainRes } from "../../../helper";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 type Logo = {
   uid: string;
@@ -21,7 +20,7 @@ type CMSResponse = {
 };
 
 const InfiniteSliderBasic = ({data}:{data:CMSResponse}) => {
-  const logos = data?.block?.find((b: any) => b.movingcard)?.movingcard?.fillogo ?? [];
+  const logos = data?.block?.find((b) => b.movingcard)?.movingcard?.fillogo ?? [];
 
   if (!logos.length) return null;
 

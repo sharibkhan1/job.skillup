@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef } from "react";
 import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import ArrowHover from "../arrowhover";
 import animation1 from "../../../public/lottie/680bca7b0266b7a0714451bf_866606df10f2175bd6a4bfbc95f4ba98_Home%201.json";
@@ -62,7 +62,7 @@ const FeatureCard: React.FC<{
 
 const GridViewCard = ({data}:{data:LMSResponse}) => {
 
-    const gridview  = data?.block?.find((b: any) => b.gridview)?.gridview;
+    const gridview  = data?.block?.find((b) => b.gridview)?.gridview;
 
   if (!gridview ) return null;
   // Extracting title from rich text

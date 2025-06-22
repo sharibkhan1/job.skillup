@@ -14,7 +14,7 @@ import { getMainRes } from "../../helper";
 
 export default function Page() {
 
-    const [mainRes, setMainRes] = useState<any>(null);
+    const [mainRes, setMainRes] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,14 +50,16 @@ export default function Page() {
       </div>
 
       <div className="flex items-center justify-center" > 
-      <PaymentGridViewCard/>
+      <PaymentGridViewCard data={mainRes}/>
       </div>
 
-      <SolutionsContainer/>    
-      <ConvinceComp/>
-      <TestimonialPage/>  
-      <SecFoot/>
-      <Footer/>
+      <SolutionsContainer data={mainRes}/>    
+      <ConvinceComp data={mainRes}/>
+        <div className="h-2 w-full bg-gradient-to-r from-[#FBE8DB] via-[#F5F2DC] to-[#F5E7DF]" />
+
+      <TestimonialPage data={mainRes}/>  
+      <SecFoot data={mainRes}/>
+      <Footer data={mainRes}/>
     </div>
   );
 }

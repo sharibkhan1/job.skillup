@@ -6,11 +6,48 @@ import Image from 'next/image'; // Make sure this import is at the top
 import ArrowHover from '../arrowhover';
 import { SecInfiniteSlider } from '../sec-slider';
 
-const ConvinceComp = () => {
+// types/convince.ts
+export interface ImageAsset {
+  url: string;
+}
+
+export interface MovingLogo {
+  logos: ImageAsset[];
+}
+
+export interface CardContent {
+  bgcard: ImageAsset;
+  title: string;
+  subtitle: string;
+  sidelogo: ImageAsset;
+}
+
+export interface MovingCardContent extends CardContent {
+  botttom: string;
+  movinglogo: MovingLogo;
+}
+
+export interface ConvinceData {
+  title: {
+    children: {
+      type: string;
+      children: { text: string; italic?: boolean }[];
+    }[];
+  };
+  movingcard: MovingCardContent;
+  card: CardContent;
+}
+
+export interface BlockData {
+  block?: Array<{
+    convince?: ConvinceData;
+  }>;
+}
+const ConvinceComp = ({data}:{data:BlockData }) => {
       const leftRef = useRef<HTMLDivElement>(null);
   const [rightHeight, setRightHeight] = useState<number | undefined>(undefined);
 
-    useEffect(() => {
+      useEffect(() => {
     const updateHeight = () => {
       if (leftRef.current) {
         const height = leftRef.current.offsetHeight;
@@ -22,14 +59,26 @@ const ConvinceComp = () => {
     window.addEventListener('resize', updateHeight);
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
+  
+    const convince = data?.block?.find((b) => b.convince)?.convince;
+
+  if (!convince) return null;
+
+  // Render title with italic formatting
+const heading = convince.title.children?.[0]?.children
+  .map(child =>
+    child.italic
+      ? `<span class="italic break-words inline-block">${child.text}</span>`
+      : child.text
+  )
+  .join("") ?? "";
+
 
   return (
     <div className="px-4 sm:px-6 md:px-12 mt-10 md:mt-20 bg-[#F7FAFA] xl:px-20 2xl:px-[18rem]">
-      <div className="w-full rounded-[3rem] text-black py-10 md:py-32  ">
+      <div className="rounded-[3rem] text-black py-10 md:py-32  ">
         {/* Top Section Title */}
-        <h2 className="text-4xl md:text-6xl px-6 sm:px-10 xl:text-7xl font-light text-center mb-16">
-          Convenience, powered by AI
-        </h2>
+        <h2 className="text-4xl md:text-6xl px-6 sm:px-10 xl:text-7xl font-light text-center mb-16" dangerouslySetInnerHTML={{ __html: heading }}/>
 
         {/* Main Containers */}
         <div className="flex flex-col mt-5 md:mt-20  lg:flex-row items-center justify-between gap-8">
@@ -38,7 +87,7 @@ const ConvinceComp = () => {
 <div className="w-full relative rounded-3xl overflow-hidden">
   {/* Background Image */}
   <Image
-    src="/images/6818f7dd64a12a2adb3de83c_nav_dropdown-bg.jpg" // replace with your actual bg image
+    src={convince.card.bgcard.url}
     alt="Background"
     layout="fill"
     objectFit="cover"
@@ -53,7 +102,7 @@ const ConvinceComp = () => {
   {/* Bottom-right icon */}
   <div className="absolute bottom-7 right-7 z-20">
     <Image
-      src="/svgs/inline_svg_50.svg" // replace with your actual icon
+      src={convince.card.sidelogo.url}
       alt="Check Icon"
       width={82}
       height={82}
@@ -62,11 +111,10 @@ const ConvinceComp = () => {
 </div>
              <div className='p-3 space-y-5'>
             <h3 className="text-2xl font-normal text-center mt-6">
-              Fast approvals
+                {convince.card.title}
             </h3>
             <p className="text-gray-600 text-lg text-center mt-2">
-              Get next-day approval for non-dilutive payment solutions with AI-powered data
-              integrations and pre-qualification.
+                {convince.card.subtitle}
             </p>
               <div className="inline-flex md:mt-8 ml-[35%]  items-end gap-2 text-md font-medium text-transparent group transition-colors duration-300 cursor-pointer">
   E
@@ -79,7 +127,7 @@ const ConvinceComp = () => {
 <div className="w-full  relative rounded-3xl overflow-hidden">
   {/* Background Image */}
   <Image
-    src="/images/6818f7dd64a12a2adb3de83c_nav_dropdown-bg.jpg" // replace with your actual bg image
+    src={convince.movingcard.bgcard.url}
     alt="Background"
     layout="fill"
     objectFit="cover"
@@ -90,21 +138,36 @@ const ConvinceComp = () => {
  <div className="relative z-10  h-full">
       <div className="flex gap-4 max-md:px-5 h-full overflow-hidden justify-center">
   <SecInfiniteSlider direction="vertical" gap={0} speed={60} className="w-[70px] sm:w-[100px] md:w-[140px] h-full">
-    <img src="/images/67e31799ed0baf28db8f5648_chase.avif" alt="Adobe"  className="bg-white rounded-3xl my-3  h-[70px] sm:h-[100px] md:h-[140px]" />
-    <img src="/images/67e31799ba45ecc6a5b56b3c_pipedrive.avif" alt="Adobe" className="bg-white rounded-3xl my-3   h-[70px] sm:h-[100px] md:h-[140px]" />
-    <img src="/images/67e31799b8738def978e540e_stripe.avif" alt="Adobe" className="bg-white rounded-3xl my-3  h-[70px] sm:h-[100px] md:h-[140px]" />
+{convince.movingcard.movinglogo.logos.slice(0, 3).map((logo, index) => (
+                      <img 
+                        key={index} 
+                        src={logo.url} 
+                        alt={`Logo ${index}`} 
+                        className="bg-white rounded-3xl my-3 h-[70px] sm:h-[100px] md:h-[140px]" 
+                      />
+                    ))}
   </SecInfiniteSlider>
 
   <SecInfiniteSlider direction="vertical" reverse={true} gap={0} speed={60} className="w-[70px] sm:w-[100px] md:w-[140px] h-full">
-    <img src="/images/67e31799ed0baf28db8f5648_chase.avif" alt="Adobe"  className="bg-white rounded-3xl my-3  h-[70px] sm:h-[100px] md:h-[140px]" />
-    <img src="/images/67e31799ba45ecc6a5b56b3c_pipedrive.avif" alt="Adobe" className="bg-white rounded-3xl my-3   h-[70px] sm:h-[100px] md:h-[140px]" />
-    <img src="/images/67e31799b8738def978e540e_stripe.avif" alt="Adobe" className="bg-white rounded-3xl my-3  h-[70px] sm:h-[100px] md:h-[140px]" />
+ {convince.movingcard.movinglogo.logos.slice(3, 6).map((logo, index) => (
+                      <img 
+                        key={index} 
+                        src={logo.url} 
+                        alt={`Logo ${index}`} 
+                        className="bg-white rounded-3xl my-3 h-[70px] sm:h-[100px] md:h-[140px]" 
+                      />
+                    ))}
   </SecInfiniteSlider>
 
   <SecInfiniteSlider direction="vertical" gap={0} speed={60} className="w-[70px] sm:w-[100px] md:w-[140px] h-full">
-    <img src="/images/67e31799ed0baf28db8f5648_chase.avif" alt="Adobe"  className="bg-white rounded-3xl my-3  h-[70px] sm:h-[100px] md:h-[140px]" />
-    <img src="/images/67e31799ba45ecc6a5b56b3c_pipedrive.avif" alt="Adobe" className="bg-white rounded-3xl my-3   h-[70px] sm:h-[100px] md:h-[140px]" />
-    <img src="/images/67e31799b8738def978e540e_stripe.avif" alt="Adobe" className="bg-white rounded-3xl my-3  h-[70px] sm:h-[100px] md:h-[140px]" />
+                    {convince.movingcard.movinglogo.logos.slice(6, 9).map((logo, index) => (
+                      <img 
+                        key={index} 
+                        src={logo.url} 
+                        alt={`Logo ${index}`} 
+                        className="bg-white rounded-3xl my-3 h-[70px] sm:h-[100px] md:h-[140px]" 
+                      />
+                    ))}
   </SecInfiniteSlider>
       </div>
     </div>
@@ -113,7 +176,7 @@ const ConvinceComp = () => {
   {/* Bottom-right icon */}
   <div className="absolute bottom-7 right-7 z-20">
     <Image
-      src="/svgs/inline_svg_51.svg" // replace with your actual icon
+      src={convince.movingcard.sidelogo.url}
       alt="Check Icon"
       width={82}
       height={82}
@@ -122,14 +185,13 @@ const ConvinceComp = () => {
 </div>
             <div className='p-3  space-y-5 flex flex-col items-center'>
             <h3 className="text-2xl font-normal text-center mt-6">
-              Fast approvals
+                {convince.movingcard.title}
             </h3>
             <p className="text-gray-600 text-lg text-center mt-2">
-              Get next-day approval for non-dilutive payment solutions with AI-powered data
-              integrations and pre-qualification.
+                {convince.movingcard.subtitle}
             </p>
               <div className="inline-flex mt-3 md:mt-8 items-end ">
-<ArrowHover text='Explore integrations' />
+<ArrowHover text={convince.movingcard.botttom} />
 </div>
             </div>
           </div>

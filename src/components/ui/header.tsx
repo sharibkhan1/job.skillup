@@ -16,17 +16,43 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { getHeaderRes } from "../../../helper";
 
-export interface NavItem {
-  title: string;
-  href?: string;
-  items?: SubItem[];
-  botItems?: SubItem[];
+// types/header.ts
+ interface ImageAsset {
+  url: string;
+  title?: string; // Optional since it's not used in your component
 }
 
-export interface SubItem {
-  title: string;
-  href: string;
-  image?:string;
+interface NavLinkItem {
+  linklogo: ImageAsset | null;
+  linktitle: string;
+}
+
+interface MultiLinkItem {
+  multititle: string;
+  upperlink: NavLinkItem[];
+  lowertitle: string[];
+}
+
+interface NavLinks {
+  singlink: string[];
+  multilink: MultiLinkItem[];
+}
+
+ interface StartButtonLink {
+  linklogo: ImageAsset | null;
+  linktitle: string;
+}
+
+interface StartButton {
+  signinmenu: string;
+  link: StartButtonLink[];
+}
+
+interface HeaderData {
+  logoimage: ImageAsset;
+  navlinkimg: ImageAsset;
+  navlinks: NavLinks;
+  startbutton: StartButton;
 }
 
 function Header1() {
@@ -34,8 +60,8 @@ function Header1() {
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 const [openDropdown, setOpenDropdown] = useState(false);
 
-      const [header, setHeader] = useState<any>(null)
-      const [loading, setLoading] = useState(true)
+  const [header, setHeader] = useState<HeaderData | null>(null);
+      const [,setLoading] = useState(true)
     
       useEffect(() => {
         const fetchHeader = async () => {
@@ -118,7 +144,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
   ))}
 
   {/* Dropdowns from multilink */}
-  {header?.navlinks?.multilink?.map((item: any) => (
+  {header?.navlinks?.multilink?.map((item) => (
     <NavigationMenuItem key={item.multititle}>
       <NavigationMenuTrigger className="group relative px-2 py-1 text-sm font-medium text-white transition-none">
         {item.multititle}
@@ -143,7 +169,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
         <div className="w-[55%] p-8 flex flex-col justify-between">
           {/* Top Items */}
           <div className="flex flex-col">
-            {item.upperlink?.map((subItem: any) => (
+            {item.upperlink?.map((subItem) => (
               <NavigationMenuLink
                 key={subItem.linktitle}
                 href="#"
@@ -213,7 +239,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
         className="absolute right-0 top-full mt-6 w-64 rounded-xl bg-white shadow-lg z-50 overflow-hidden"
       >
         <div className="p-2">
-{header?.startbutton?.link?.map((linkItem: any) => (
+{header?.startbutton?.link?.map((linkItem) => (
   <Link
     key={linkItem.linktitle}
     href={`/${linkItem.linktitle.toLowerCase().replace(/\s+/g, '-')}`} // OR linkItem.href if it exists
@@ -263,7 +289,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
       ))}
 
       {/* MultiLinks with dropdown */}
-      {header?.navlinks?.multilink?.map((item: any) => (
+      {header?.navlinks?.multilink?.map((item) => (
         <div key={item.multititle} className="flex flex-col gap-3">
           <button
             onClick={() => toggleSubmenu(item.multititle)}
@@ -289,7 +315,7 @@ const [openDropdown, setOpenDropdown] = useState(false);
               className="overflow-hidden space-y-4 px-4 pt-2 flex flex-col gap-4"
             >
               {/* Upper Links First */}
-              {item.upperlink?.map((subItem: any) => (
+              {item.upperlink?.map((subItem) => (
                 <Link
                   key={subItem.linktitle}
                   href="#"

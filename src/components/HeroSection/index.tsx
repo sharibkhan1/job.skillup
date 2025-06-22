@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Inputcostom from '../inputcostom'
 
 type HeroBlock = {
@@ -14,7 +14,7 @@ type HeroBlock = {
 };
 
 const HeroSection = ({data}:{data:HeroBlock}) => {
-  const hero = data?.block[2]?.hero;
+  const hero = data?.block?.find((b) => b.hero)?.hero;
 
   if (!hero) return null;
 
