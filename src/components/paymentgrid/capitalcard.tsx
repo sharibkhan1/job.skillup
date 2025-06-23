@@ -10,7 +10,7 @@ export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCa
       const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollDirection = useMotionValue(0);
-  const backSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
+  const backSpring = useSpring(scrollDirection, { stiffness: 200, damping: 50 });
 
     // Intersection Observer to trigger animation when component is visible
     useEffect(() => {
@@ -83,10 +83,9 @@ export default function GyngerCapitalCard({ secondcard }: { secondcard: SecondCa
           {isVisible && (
                     <motion.div
               key="ssec-card"
-        initial={{ y: -100, opacity: 0 }}
+        initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -100, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 50, damping: 10, delay: 0.2 }}
+transition={{ type: "spring", stiffness: 100, damping: 50, delay: 0.2 }}
         style={{ y: backSpring }}
         className="relative z-10 w-full flex justify-center items-center p-6 lg:p-12"
       >

@@ -14,8 +14,8 @@ const PaymentGridViewCard = ({ data }: { data: LMSResponses }) => {
     const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 const scrollDirection = useMotionValue(0); // raw delta
-const frontSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
-const backSpring = useSpring(scrollDirection, { stiffness: 100, damping: 20 });
+const frontSpring = useSpring(scrollDirection, { stiffness: 140, damping: 40 });
+const backSpring = useSpring(scrollDirection, { stiffness: 140, damping: 40 });
 
   // Intersection Observer to trigger animation when component is visible
   useEffect(() => {
@@ -172,8 +172,8 @@ const secondCard = paymentgrid.secondcard;
                         exit={{ y: -100, opacity: 0 }}
               transition={{ 
                 type: "spring",
-                stiffness: 50,
-                damping: 10,
+                stiffness: 80,
+                damping: 30,
                 delay: 0.2
               }}
                className="absolute md:space-y-6 bottom-0 right-0 w-[40%] sm:w-[200px] md:w-[280px] xl:w-[280px] bg-[#DAE8E8] rounded-tl-2xl rounded-bl-2xl pl-5 sm:pl-7 md:pl-14 pt-5 sm:pt-7 md:pt-14 shadow-md z-0">
@@ -219,8 +219,8 @@ const secondCard = paymentgrid.secondcard;
                             exit={{ y: -100, opacity: 0 }}
               transition={{ 
                 type: "spring",
-                stiffness: 50,
-                damping: 10
+                stiffness: 80,
+                damping: 30
               }}
                 style={{ y: frontSpring }} // 👈 Reacts smoothly
  className="relative mr-[35%] sm:mr-[30%] md:mr-[35%] lg:mr-[50%] md:min-w-[350px] xl:mr-[43%] 2xl:mr-[40%] my-[15%] sm:my-[16%] md:my-[17%] w-[180px] sm:w-[230px] md:w-[320px] lg:w-[360px] xl:w-[400px] bg-white/30 backdrop-blur-3xl rounded-xl sm:rounded-2xl shadow-xl p-3 sm:p-4 md:p-6 lg:p-9 z-10">
@@ -240,11 +240,11 @@ const secondCard = paymentgrid.secondcard;
     className={`h-4 w-4 sm:h-5 sm:w-5 md:h-8 md:w-8 flex items-center justify-center rounded border-2 ${
       selected.includes("monthly")
         ? "bg-[#9FE29E] border-green-600"
-        : "bg-white border-gray-400"
+        : "bg-white hover:bg-[#b3e0b2] hover:border-green-600 border-gray-400"
     }`}
   >
     {selected.includes("monthly") && (
-      <Check className="w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 text-white" />
+      <Check className="fade-check w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 text-white" />
     )}
   </div>
   <span className="text-[#0c1a1a]">{opt1}</span>
@@ -260,11 +260,11 @@ const secondCard = paymentgrid.secondcard;
     className={`h-4 w-4 sm:h-5 sm:w-5 md:h-8 md:w-8 flex items-center justify-center rounded border-2 ${
       selected.includes("terms")
         ? "bg-[#9FE29E] border-green-600"
-        : "bg-white border-gray-400"
+        : "bg-white hover:bg-[#b3e0b2] hover:border-green-600 border-gray-400"
     }`}
   >
     {selected.includes("terms") && (
-      <Check className="w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 text-white" />
+      <Check className="fade-check w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 text-white" />
     )}
   </div>
   <span className="text-[#0c1a1a]">{opt2}</span>

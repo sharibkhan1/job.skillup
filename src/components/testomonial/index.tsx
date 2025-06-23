@@ -82,7 +82,7 @@ const TestimonialPage = ({data}:{data:BlockData }) => {
         </div>
 
         {/* Right Section */}
-<div className="w-full relative overflow-hidden">
+<div className="w-full relative hide-scrollbar overflow-x-auto">
   {/* Fog effects */}
   <div className="pointer-events-none absolute top-0 left-0 h-full w-20 z-30 bg-transparent lg:bg-gradient-to-r from-white to-white/0" />
 
@@ -94,12 +94,14 @@ const TestimonialPage = ({data}:{data:BlockData }) => {
     }}
   >
     {testimonials.map((t, i) => (
-      <div
-        key={i}
-        className={`flex-shrink-0 px-4 py-4 ${
-          isMobile ? 'w-full mx-auto' : 'w-[50%] ml-10 2xl:ml-20 mx-50'
-        } bg-white`}
-      >
+    <div
+      key={i}
+      className={`flex-shrink-0 px-4 py-4 ${
+        isMobile ? 'w-full mx-auto' : 'w-[50%] ml-10 2xl:ml-20 mx-50'
+      } bg-white transition-opacity duration-500 ${
+        i === index ? 'opacity-100' : 'opacity-40'
+      }`}
+    >
         <div className="flex items-center gap-4 mb-4">
           <Image
             src={t.userimage.url}
